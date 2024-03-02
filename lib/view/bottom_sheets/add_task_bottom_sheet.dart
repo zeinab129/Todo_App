@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/firebase/firebase_functions.dart';
+import 'package:todo_app/model/task_model.dart';
 import 'package:todo_app/my_theme/my_theme.dart';
 import 'package:todo_app/providers/my_provider.dart';
 import 'package:todo_app/view/widgets/item_task_tff.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  const AddTaskBottomSheet({super.key});
+  bool edit;
+  TaskModel? taskModel;
+
+  AddTaskBottomSheet({super.key, required this.edit, this.taskModel});
 
   @override
   State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
@@ -18,15 +23,26 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   var descriptionController = TextEditingController();
 
   @override
+  void initState() {
+    if (widget.edit) {
+      titleController.text = widget.taskModel!.title ?? "";
+      descriptionController.text = widget.taskModel!.description ?? "";
+      chosenDate =
+          DateTime.fromMillisecondsSinceEpoch(widget.taskModel!.date ?? 0);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var provider = Provider.of<MyProvider>(context);
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "Add New Task",
+            widget.edit ? "Edit Task" : "Add New Task",
             style: GoogleFonts.poppins(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -88,11 +104,31 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: widget.edit
+                  ? () {
+                      TaskModel model = TaskModel(
+                          isDone: widget.taskModel!.isDone,
+                          id: widget.taskModel!.id,
+                          title: titleController.text,
+                          description: descriptionController.text,
+                          date: DateUtils.dateOnly(chosenDate)
+                              .millisecondsSinceEpoch);
+                      FirebaseFunctions.updateTask(model);
+                      Navigator.pop(context);
+                    }
+                  : () {
+                      TaskModel model = TaskModel(
+                          title: titleController.text,
+                          description: descriptionController.text,
+                          date: DateUtils.dateOnly(chosenDate)
+                              .millisecondsSinceEpoch);
+                      FirebaseFunctions.addTask(model);
+                      Navigator.pop(context);
+                    },
               style: ElevatedButton.styleFrom(
                   backgroundColor: MyTheme.primaryColor),
               child: Text(
-                "Add Task",
+                widget.edit ? "Edit Task" : "Add Task",
                 style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,

@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class MyProvider extends ChangeNotifier {
   String languageCode = "en";
-  ThemeMode themeMode = ThemeMode.system;
+  ThemeMode themeMode =
+  ((SchedulerBinding.instance.platformDispatcher.platformBrightness) ==
+      Brightness.dark)
+      ? ThemeMode.dark
+      : ThemeMode.light;
 
   void changeTheme(ThemeMode theme) {
     themeMode = theme;

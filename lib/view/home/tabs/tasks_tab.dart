@@ -1,12 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/firebase/firebase_functions.dart';
+import 'package:todo_app/model/task_model.dart';
 import 'package:todo_app/my_theme/my_theme.dart';
 import 'package:todo_app/providers/my_provider.dart';
 import 'package:todo_app/view/widgets/item_task.dart';
 
-class TasksTab extends StatelessWidget {
-  const TasksTab({super.key});
+class TasksTab extends StatefulWidget {
+  TasksTab({super.key});
+
+  @override
+  State<TasksTab> createState() => _TasksTabState();
+}
+
+class _TasksTabState extends State<TasksTab> {
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -29,27 +39,49 @@ class TasksTab extends StatelessWidget {
                 color: provider.isLightMood()
                     ? MyTheme.blackColor
                     : MyTheme.whiteColor),
-            initialSelectedDate: DateTime.now(),
+            initialSelectedDate: selectedDate,
             selectionColor: MyTheme.primaryColor,
             selectedTextColor: MyTheme.whiteColor,
             daysCount: 365,
             locale: "en",
             height: MediaQuery.of(context).size.height * 0.12,
             onDateChange: (date) {
-              // New date selected
-              // setState(() {
-              //   _selectedValue = date;
-              // });
+              selectedDate = date;
+              setState(() {});
             },
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return const ItemTask();
+              child: StreamBuilder<QuerySnapshot<TaskModel>>(
+                stream: FirebaseFunctions.getTasks(selectedDate),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error has occurred!"),
+                    );
+                  }
+                  var tasks =
+                      snapshot.data?.docs.map((e) => e.data()).toList() ?? [];
+                  if (tasks.isEmpty) {
+                    return const Center(
+                      child: Text("No Tasks Add! "),
+                    );
+                  }
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      return ItemTask(
+                        taskModel: tasks[index],
+                      );
+                    },
+                    itemCount: tasks.length,
+                  );
                 },
-                itemCount: 10,
               ),
             ),
           )

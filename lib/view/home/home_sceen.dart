@@ -39,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
               return Container(
                   padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: const AddTaskBottomSheet());
+                  child: AddTaskBottomSheet(
+                    edit: false,
+                  ));
             },
           );
         },
@@ -49,13 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
           size: 30,
         ),
       ),
-      bottomNavigationBar: Stack(
-        children: [
-          BottomAppBar(
-            notchMargin: 8,
-            child: Container(),
-          ),
-          BottomNavigationBar(
+      bottomNavigationBar: BottomAppBar(
+          notchMargin: 8,
+          padding: const EdgeInsets.all(0.0),
+          child: BottomNavigationBar(
             currentIndex: index,
             onTap: (value) {
               index = value;
@@ -68,11 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.gear), label: "")
             ],
-          )
-        ],
-      ),
+          )),
     );
   }
 
-  List<Widget> tabs = [const TasksTab(), const SettingsTab()];
+  List<Widget> tabs = [TasksTab(), const SettingsTab()];
 }
