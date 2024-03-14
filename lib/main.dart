@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
       themeMode: provider.themeMode,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: AuthScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
         AuthScreen.routeName: (context) => const AuthScreen(),

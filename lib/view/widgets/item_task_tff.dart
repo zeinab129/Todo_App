@@ -7,6 +7,7 @@ class ItemTaskTFF extends StatelessWidget {
   TextEditingController controller;
   TextInputType? keyboardType;
   bool? isObscure;
+  Function validate;
 
   ItemTaskTFF(
       {super.key,
@@ -14,27 +15,35 @@ class ItemTaskTFF extends StatelessWidget {
       required this.hint,
       required this.controller,
       this.keyboardType = TextInputType.text,
-      this.isObscure = false});
+      this.isObscure = false,
+      required this.validate});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: keyboardType,
       obscureText: isObscure!,
+      validator: (value) => validate(value),
       decoration: InputDecoration(
-        labelText: label,
-        labelStyle: GoogleFonts.poppins(color: MyTheme.primaryColor),
-        hintText: hint,
-        hintStyle: GoogleFonts.poppins(color: MyTheme.greyColor),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide:
-                const BorderSide(color: MyTheme.primaryColor, width: 2)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide:
-                const BorderSide(color: MyTheme.primaryColor, width: 2)),
-      ),
+          labelText: label,
+          labelStyle: GoogleFonts.poppins(color: MyTheme.primaryColor),
+          hintText: hint,
+          hintStyle: GoogleFonts.poppins(color: MyTheme.greyColor),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide:
+                  const BorderSide(color: MyTheme.primaryColor, width: 2)),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide:
+                  const BorderSide(color: MyTheme.primaryColor, width: 2)),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide:
+              const BorderSide(color: MyTheme.redColor, width: 2)),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: MyTheme.redColor, width: 2))),
       controller: controller,
     );
   }

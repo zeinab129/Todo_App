@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
+import 'package:todo_app/helper/helper.dart';
 import 'package:todo_app/model/task_model.dart';
 import 'package:todo_app/my_theme/my_theme.dart';
 import 'package:todo_app/providers/my_provider.dart';
@@ -57,6 +58,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             label: "Title",
             hint: "Enter Task Title",
             controller: titleController,
+            validate: (value){
+              if(value.isEmpty || value == null){
+                return "Title required!";
+              }
+              if(!isValidTaskTitle(value)){
+                return "Title can't be less than 4 character!";
+              }
+            },
           ),
           const SizedBox(
             height: 24,
@@ -65,6 +74,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             label: "Description",
             hint: "Enter Task Description",
             controller: descriptionController,
+              validate: (value){
+                if(value.isEmpty || value == null){
+                  return "Description required!";
+                }
+                if(!isValidTaskDesc(value)){
+                  return "description can't be less than 15 character!";
+                }
+              }
           ),
           const SizedBox(
             height: 24,

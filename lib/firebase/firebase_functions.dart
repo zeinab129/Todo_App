@@ -48,47 +48,57 @@ class FirebaseFunctions {
   }
 
   static createUserAccount(
-      String email, String password, String userName, String phone) async {
+      {required String email,
+      required String password,
+      required String userName,
+      required String phone,
+      required Function onSuccess,
+      required Function onError}) async {
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      credential.user!.sendEmailVerification();
       UserModel user = UserModel(
           id: credential.user?.uid ?? "",
           userName: userName,
           email: email,
           phone: phone);
-      addUser(user);
+      addUser(user).then((value) {
+        onSuccess();
+      }).catchError((e) {
+        onError();
+      });
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
+      onError(e.message);
     } catch (e) {
-      print(e);
+      onError("Something went wrong!");
     }
   }
 
-  static login(String email, String password) async {
+  static login(
+      {required String email,
+      required String password,
+      required Function onError,
+      required Function onSuccess}) async {
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      onSuccess();
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      onError(e.message);
     }
   }
 
   static Future<void> addUser(UserModel user) {
     var collection = getUserCollection();
     var docRef = collection.doc(user.id);
-
     return docRef.set(user);
+  }
+
+  static Future<void> signOut()async{
+    return await FirebaseAuth.instance.signOut();
   }
 }
