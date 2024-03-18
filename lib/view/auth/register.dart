@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
@@ -27,16 +28,19 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             children: [
               ItemTaskTFF(
-                label: "Username",
-                hint: "Enter user_name",
+                label: "user_name".tr(),
+                hint: "enter_username".tr(),
                 controller: usernameController,
                 keyboardType: TextInputType.name,
                 validate: (value) {
                   if (value == null || value.isEmpty) {
-                    return "UserName required";
+                    return "username_required".tr();
+                  }
+                  if(value.length <3 || value.length > 10){
+                    return "username_length".tr();
                   }
                   if (!isValidUserName(value)) {
-                    return "Please enter a valid userName!";
+                    return "enter_valid_username".tr();
                   }
                 },
               ),
@@ -44,49 +48,52 @@ class RegisterScreen extends StatelessWidget {
                 height: 24,
               ),
               ItemTaskTFF(
-                  label: "E-mail",
-                  hint: "Enter e-mail",
+                  label: "email".tr(),
+                  hint: "enter_email".tr(),
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   validate: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Email required";
+                      return "email_required".tr();
                     }
                     if (!isValidEmail(value)) {
-                      return "Please enter a valid e-mail!";
+                      return "enter_valid_email".tr();
                     }
                   }),
               const SizedBox(
                 height: 24,
               ),
               ItemTaskTFF(
-                  label: "Phone",
-                  hint: "Enter phone number",
+                  label: "phone".tr(),
+                  hint: "enter_phone_num".tr(),
                   controller: phoneController,
                   keyboardType: TextInputType.phone,
                   validate: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Phone required";
+                      return "phone_required".tr();
                     }
                     if (!isValidPhone(value)) {
-                      return "Please enter a valid phone!";
+                      return "enter_valid_phone".tr();
                     }
                   }),
               const SizedBox(
                 height: 24,
               ),
               ItemTaskTFF(
-                  label: "Password",
-                  hint: "Enter password",
+                  label: "pass".tr(),
+                  hint: "enter_pass".tr(),
                   controller: passwordController,
                   keyboardType: TextInputType.text,
                   isObscure: true,
                   validate: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Password required";
+                      return "pass_required".tr();
+                    }
+                    if (value.length < 6|| value.length > 10){
+                      return "pass_length".tr();
                     }
                     if (!isValidPassword(value)) {
-                      return "Please enter a valid password!";
+                      return "enter_valid_pass".tr();
                     }
                   }),
               const SizedBox(
@@ -107,14 +114,14 @@ class RegisterScreen extends StatelessWidget {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: const Text("Error Message"),
+                                  title: Text("error_msg".tr()),
                                   content: Text(errorMessage),
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: const Text("Ok"))
+                                        child: Text("ok".tr()))
                                   ],
                                 );
                               },
@@ -136,7 +143,7 @@ class RegisterScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      "Register",
+                      "reg".tr(),
                       style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w400,

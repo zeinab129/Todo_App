@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
@@ -43,7 +44,7 @@ class _TasksTabState extends State<TasksTab> {
             selectionColor: MyTheme.primaryColor,
             selectedTextColor: MyTheme.whiteColor,
             daysCount: 365,
-            locale: "en",
+            locale: provider.languageCode,
             height: MediaQuery.of(context).size.height * 0.12,
             onDateChange: (date) {
               selectedDate = date;
@@ -62,15 +63,15 @@ class _TasksTabState extends State<TasksTab> {
                     );
                   }
                   if (snapshot.hasError) {
-                    return const Center(
-                      child: Text("Error has occurred!"),
+                    return Center(
+                      child: Text("error_has_occurred".tr()),
                     );
                   }
                   var tasks =
                       snapshot.data?.docs.map((e) => e.data()).toList() ?? [];
                   if (tasks.isEmpty) {
-                    return const Center(
-                      child: Text("No Tasks Add! "),
+                    return Center(
+                      child: Text("no_tasks_added".tr()),
                     );
                   }
                   return ListView.builder(

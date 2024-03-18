@@ -34,6 +34,7 @@ class FirebaseFunctions {
 
   static Stream<QuerySnapshot<TaskModel>> getTasks(DateTime date) {
     return getTaskCollection()
+        .where("userId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .where("date",
             isEqualTo: DateUtils.dateOnly(date).millisecondsSinceEpoch)
         .snapshots();
@@ -86,7 +87,11 @@ class FirebaseFunctions {
     try {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      onSuccess();
+      if(!credential.user!.emailVerified){
+        onError("Please check your email and verify!");
+      }else{
+        onSuccess();
+      }
     } on FirebaseAuthException catch (e) {
       onError(e.message);
     }
@@ -98,7 +103,13 @@ class FirebaseFunctions {
     return docRef.set(user);
   }
 
-  static Future<void> signOut()async{
-    return await FirebaseAuth.instance.signOut();
+  static Future<UserModel?> getUserData() async{
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot<UserModel> documentSnapshot = await getUserCollection().doc(userId).get();
+    return documentSnapshot.data();
+  }
+
+  static Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

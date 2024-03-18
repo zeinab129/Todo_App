@@ -1,9 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
 import 'package:todo_app/helper/helper.dart';
 import 'package:todo_app/my_theme/my_theme.dart';
+import 'package:todo_app/providers/my_provider.dart';
 import 'package:todo_app/view/home/home_sceen.dart';
 import 'package:todo_app/view/widgets/item_task_tff.dart';
 
@@ -17,6 +20,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<MyProvider>(context);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -25,33 +29,36 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             children: [
               ItemTaskTFF(
-                  label: "E-mail",
-                  hint: "Enter e-mail",
-                  controller: TextEditingController(),
+                  label: "email".tr(),
+                  hint: "enter_email".tr(),
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   validate: (value) {
                     if (value.isEmpty || value == null) {
-                      return "Email required!";
+                      return "email_required".tr();
                     }
                     if (!isValidEmail(value)) {
-                      return "Please enter a valid email!";
+                      return "enter_valid_email".tr();
                     }
                   }),
               const SizedBox(
                 height: 24,
               ),
               ItemTaskTFF(
-                  label: "Password",
-                  hint: "Enter password",
-                  controller: TextEditingController(),
+                  label: "pass".tr(),
+                  hint: "enter_pass".tr(),
+                  controller: passwordController,
                   keyboardType: TextInputType.text,
                   isObscure: true,
                   validate: (String value) {
                     if (value.isEmpty || value == null) {
-                      return "Password required!";
+                      return "pass_required".tr();
+                    }
+                    if (value.length < 6|| value.length > 10){
+                      return "pass_length".tr();
                     }
                     if (!isValidPassword(value)) {
-                      return "Please enter a valid password!";
+                      return "enter_valid_pass".tr();
                     }
                   }),
               const SizedBox(
@@ -70,14 +77,14 @@ class LoginScreen extends StatelessWidget {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: const Text("Error Message"),
+                                    title: Text("error_msg".tr()),
                                     content: Text(errorMessage),
                                     actions: [
                                       ElevatedButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: const Text("Ok"))
+                                          child: Text("ok".tr()))
                                     ],
                                   );
                                 },
@@ -90,6 +97,7 @@ class LoginScreen extends StatelessWidget {
                                 (route) => false,
                               );
                             });
+                        provider.initUser();
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -99,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
-                        "Login",
+                        "login".tr(),
                         style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w400,

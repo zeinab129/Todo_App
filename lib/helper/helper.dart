@@ -9,19 +9,19 @@ bool isValidPhone(String phone) {
 }
 
 bool isValidUserName(String userName) {
-  return RegExp(r"^[A-Za-z0-9_-]{3,9}$")
+  return RegExp(r"^[A-Za-z0-9_-]{3,10}$")
       .hasMatch(userName);
 }
 
 bool isValidPassword(String pass) {
-  return RegExp(r"^[A-Za-z0-9_-]{6,}$")
+  return RegExp(r"^[A-Za-z0-9_-]{6,10}$")
       .hasMatch(pass);
 }
 
 bool isValidTaskTitle(String title){
-  return RegExp(r"^[A-Za-z0-9_-]{4,}$").hasMatch(title);
+  return RegExp(r"^[A-Za-z0-9_-]{4,10}$").hasMatch(title);
 }
 
 bool isValidTaskDesc(String desc){
-  return RegExp(r"^[A-Za-z0-9_-]{15,}$").hasMatch(desc);
+  return RegExp(r"^[A-Za-z0-9_-]{15,100}$").hasMatch(desc);
 }

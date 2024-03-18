@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -36,7 +37,7 @@ class ItemTask extends StatelessWidget {
             onPressed: (context) {
               FirebaseFunctions.deleteTask(taskModel.id ?? "");
             },
-            label: "Delete",
+            label: "delete".tr(),
             backgroundColor: MyTheme.redColor,
             icon: Icons.delete,
             autoClose: true,
@@ -59,7 +60,7 @@ class ItemTask extends StatelessWidget {
                   },
                 );
               },
-              label: "Edit",
+              label: "edit".tr(),
               backgroundColor: MyTheme.primaryColor,
               icon: Icons.edit,
               autoClose: true,
@@ -125,16 +126,22 @@ class ItemTask extends StatelessWidget {
                 ),
               ),
               taskModel.isDone!
-                  ? Text(
-                      "Done!",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                          color: MyTheme.greenColor),
+                  ? InkWell(
+                      onTap: () {
+                        taskModel.isDone = !taskModel.isDone;
+                        FirebaseFunctions.updateTask(taskModel);
+                      },
+                      child: Text(
+                        "done".tr(),
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: MyTheme.greenColor),
+                      ),
                     )
                   : InkWell(
                       onTap: () {
-                        taskModel.isDone = true;
+                        taskModel.isDone = !taskModel.isDone;
                         FirebaseFunctions.updateTask(taskModel);
                       },
                       child: Container(

@@ -1,7 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/firebase/firebase_functions.dart';
+import 'package:todo_app/providers/my_provider.dart';
 import 'package:todo_app/view/auth/auth.dart';
 import 'package:todo_app/view/bottom_sheets/add_task_bottom_sheet.dart';
 import 'package:todo_app/view/home/tabs/settings_tab.dart';
@@ -25,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          "To Do List",
+          "todo_list".tr(),
           style: GoogleFonts.poppins(
               fontWeight: FontWeight.w700, fontSize: 24, color: Colors.white),
         ),
@@ -35,14 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextButton(
                 onPressed: () {
                   FirebaseFunctions.signOut();
-                  Navigator.pushNamed(context, AuthScreen.routeName);
+                  Navigator.pushNamedAndRemoveUntil(context, AuthScreen.routeName, (route) => false,);
                 },
-                child: const Text(
-                  "Sign Out",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500),
+                child: const Icon(
+                  Icons.logout, color: Colors.white,
                 )),
           )
         ],

@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +45,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            widget.edit ? "Edit Task" : "Add New Task",
+            widget.edit ? "edit_task".tr() : "add_new_task".tr(),
             style: GoogleFonts.poppins(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -55,15 +57,18 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             height: 12,
           ),
           ItemTaskTFF(
-            label: "Title",
-            hint: "Enter Task Title",
+            label: "title".tr(),
+            hint: "enter_task_title".tr(),
             controller: titleController,
-            validate: (value){
-              if(value.isEmpty || value == null){
-                return "Title required!";
+            validate: (value) {
+              if (value.isEmpty || value == null) {
+                return "title_required".tr();
               }
-              if(!isValidTaskTitle(value)){
-                return "Title can't be less than 4 character!";
+              if(value.length < 4 || value.length > 10){
+                return "title_length".tr();
+              }
+              if (!isValidTaskTitle(value)) {
+                return "enter_valid_title".tr();
               }
             },
           ),
@@ -71,18 +76,20 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             height: 24,
           ),
           ItemTaskTFF(
-            label: "Description",
-            hint: "Enter Task Description",
-            controller: descriptionController,
-              validate: (value){
-                if(value.isEmpty || value == null){
-                  return "Description required!";
+              label: "desc".tr(),
+              hint: "enter_task_desc".tr(),
+              controller: descriptionController,
+              validate: (value) {
+                if (value.isEmpty || value == null) {
+                  return "desc_required".tr();
                 }
-                if(!isValidTaskDesc(value)){
-                  return "description can't be less than 15 character!";
+                if(value.length<15 || value.length > 30){
+                  return "desc_length".tr();
                 }
-              }
-          ),
+                if (!isValidTaskDesc(value)) {
+                  return "enter_valid_desc".tr();
+                }
+              }),
           const SizedBox(
             height: 24,
           ),
@@ -90,7 +97,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               width: double.infinity,
               alignment: Alignment.centerLeft,
               child: Text(
-                "Select Time",
+                "select_date".tr(),
                 style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
@@ -129,7 +136,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                           title: titleController.text,
                           description: descriptionController.text,
                           date: DateUtils.dateOnly(chosenDate)
-                              .millisecondsSinceEpoch);
+                              .millisecondsSinceEpoch,
+                          userId: FirebaseAuth.instance.currentUser!.uid);
                       FirebaseFunctions.updateTask(model);
                       Navigator.pop(context);
                     }
@@ -138,14 +146,15 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                           title: titleController.text,
                           description: descriptionController.text,
                           date: DateUtils.dateOnly(chosenDate)
-                              .millisecondsSinceEpoch);
+                              .millisecondsSinceEpoch,
+                          userId: FirebaseAuth.instance.currentUser!.uid);
                       FirebaseFunctions.addTask(model);
                       Navigator.pop(context);
                     },
               style: ElevatedButton.styleFrom(
                   backgroundColor: MyTheme.primaryColor),
               child: Text(
-                widget.edit ? "Edit Task" : "Add Task",
+                widget.edit ? "edit_task".tr() : "add_task".tr(),
                 style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w400,
@@ -160,6 +169,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   Future<void> selectDate(BuildContext context, MyProvider provider) async {
     DateTime? selectedDate = await showDatePicker(
+      locale: Locale(provider.languageCode),
       context: context,
       initialDate: chosenDate,
       firstDate: DateTime.now(),
